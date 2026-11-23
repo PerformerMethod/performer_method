@@ -6,6 +6,7 @@ export type Practitioner = {
   city: string;
   blurb: string;
   initials: string;
+  photo?: string;
 };
 
 export type RecoveryCentre = {
@@ -45,40 +46,47 @@ export const specialties = [
 
 export const practitioners: Practitioner[] = [
   {
-    id: "p1",
-    name: "Amelia Croft",
-    specialty: "Physio",
-    location: "Surry Hills, NSW",
-    city: "Sydney",
-    blurb: "Stage injury recovery with a soft landing back into eight-shows-a-week.",
-    initials: "AC",
+    id: "cristina-dagostino",
+    name: "Cristina D’Agostino",
+    specialty: "Counselling",
+    location: "Telehealth · Worldwide",
+    city: "Telehealth",
+    blurb:
+      "Master’s-qualified Registered Counsellor with more than 20 years of professional performing arts experience.",
+    initials: "CD",
+    photo: "/assets/people/cristina-dagostino.webp",
   },
   {
-    id: "p2",
-    name: "Jonah Blake",
-    specialty: "Voice",
-    location: "South Yarra, VIC",
-    city: "Melbourne",
-    blurb: "Rehab for tired belts, speech quality, and tour-proof warm-ups.",
-    initials: "JB",
-  },
-  {
-    id: "p3",
-    name: "Priya Nair",
-    specialty: "Psychology",
-    location: "Fortitude Valley, QLD",
-    city: "Brisbane",
-    blurb: "Performance anxiety, identity after closing night, and kinder self-talk.",
-    initials: "PN",
-  },
-  {
-    id: "p4",
-    name: "Marcus Hale",
+    id: "oscar-bridges",
+    name: "Oscar Bridges",
     specialty: "Nutrition",
-    location: "Northbridge, WA",
-    city: "Perth",
-    blurb: "Fuel plans for matinee days, travel weeks, and vocal load.",
-    initials: "MH",
+    location: "Touring · Australia",
+    city: "Australia",
+    blurb:
+      "Nutrition Counsellor and performer helping touring artists with gut health, energy and food on the road.",
+    initials: "OB",
+    photo: "/assets/people/oscar-bridges.webp",
+  },
+  {
+    id: "rosie-harris",
+    name: "Rosie Harris",
+    specialty: "Vocal health",
+    location: "Melbourne · VIC",
+    city: "Melbourne",
+    blurb:
+      "Singing teacher and vocal coach drawing on voice science, somatic work and neurodiversity-affirming practice.",
+    initials: "RH",
+    photo: "/assets/people/rosie-harris.webp",
+  },
+  {
+    id: "bronwyn-claassen",
+    name: "Bronwyn Claassen",
+    specialty: "Physiotherapy",
+    location: "Australia-wide",
+    city: "Australia",
+    blurb:
+      "More than three decades of performing arts physiotherapy, including major Australian touring productions.",
+    initials: "BC",
   },
   {
     id: "p5",

@@ -1,21 +1,19 @@
 .tab-bar {
   position: fixed;
-  left: 0.75rem;
-  right: 0.75rem;
+  left: var(--gutter);
+  right: var(--gutter);
   bottom: calc(0.55rem + env(safe-area-inset-bottom));
   z-index: 50;
   display: none;
   grid-template-columns: repeat(5, 1fr);
   gap: 0.15rem;
-  padding: 0.5rem 0.4rem;
-  border-radius: 28px;
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(var(--blur)) saturate(1.45);
-  -webkit-backdrop-filter: blur(var(--blur)) saturate(1.45);
-  border: 1px solid rgba(255, 255, 255, 0.65);
-  box-shadow:
-    var(--shadow-glass),
-    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  padding: 0.45rem 0.35rem;
+  border-radius: 999px;
+  background: rgba(242, 242, 236, 0.9);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  border: 1px solid var(--line);
+  box-shadow: 0 12px 40px -24px rgba(28, 58, 19, 0.35);
 }
 
 .tab-bar__item {
@@ -23,7 +21,7 @@
   justify-items: center;
   gap: 0.18rem;
   padding: 0.45rem 0.2rem;
-  border-radius: 18px;
+  border-radius: 999px;
   color: var(--muted);
   font-size: 0.62rem;
   font-weight: 500;
@@ -35,7 +33,7 @@
 
 .tab-bar__item.is-active {
   color: var(--ink);
-  background: rgba(255, 255, 255, 0.62);
+  background: rgba(28, 58, 19, 0.08);
 }
 
 @media (max-width: 900px) {

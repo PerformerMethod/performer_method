@@ -12,14 +12,24 @@ type Card = {
   city: string;
   blurb: string;
   initials: string;
+  photo?: string;
 };
 
-function listingToCard(l: Listing): Card {
-  const parts = (l.name || "?").trim().split(/\s+/);
+function initialsFromName(name: string) {
+  const parts = name
+    .normalize("NFKD")
+    .replace(/[^\p{L}\p{N}\s'-]/gu, "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
   const initials = parts
     .slice(0, 2)
     .map((p) => p[0]?.toUpperCase() || "")
     .join("");
+  return initials || "PM";
+}
+
+function listingToCard(l: Listing): Card {
   return {
     id: l.id,
     name: l.name,
@@ -27,7 +37,8 @@ function listingToCard(l: Listing): Card {
     location: l.place || "",
     city: (l.place || "").split(/[-–,]/)[0]?.trim() || "Australia",
     blurb: l.bio || l.practice || l.role || "",
-    initials: initials || "PM",
+    initials: initialsFromName(l.name || ""),
+    photo: l.photo_url || undefined,
   };
 }
 
@@ -132,7 +143,13 @@ export function Practitioners() {
             const fav = favourites.has(p.id);
             return (
               <article key={p.id} className="directory-card">
-                <div className="directory-card__avatar">{p.initials}</div>
+                <div className="directory-card__avatar">
+                  {p.photo ? (
+                    <img src={p.photo} alt="" width={480} height={600} loading="lazy" />
+                  ) : (
+                    <span>{p.initials}</span>
+                  )}
+                </div>
                 <div>
                   <p className="person-tile__meta">
                     {p.specialty} · {p.location}
@@ -153,9 +170,7 @@ export function Practitioners() {
                   >
                     {fav ? "★" : "☆"}
                   </button>
-                ) : (
-                  <span />
-                )}
+                ) : null}
               </article>
             );
           })}
