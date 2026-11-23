@@ -51,6 +51,15 @@ export type Listing = {
   photo_url?: string;
 };
 
+/** Privacy preferences from pm-recovery `/me/settings`. */
+export type MemberSettings = {
+  share?: boolean | null;
+  ai?: boolean | null;
+  ai_ok?: boolean | null;
+  marketing?: boolean | null;
+  share_at?: string | null;
+};
+
 const AUTH_KEY = "pm.auth";
 
 export function apiBase() {
@@ -241,18 +250,34 @@ export async function saveCheckins(
   });
 }
 
+export async function getSettings(
+  session: Session,
+  onSession?: (s: Session | null) => void,
+) {
+  return api<{ settings?: MemberSettings; photo_url?: string }>("/me/settings", {
+    base: recoveryBase(),
+    session,
+    onSession,
+  });
+}
+
 export async function setSettings(
   session: Session,
   body: { share?: boolean; ai?: boolean; marketing?: boolean },
   onSession?: (s: Session | null) => void,
 ) {
-  return api("/me/settings", {
+  return api<{ settings?: MemberSettings }>("/me/settings", {
     method: "POST",
     body,
     base: recoveryBase(),
     session,
     onSession,
   });
+}
+
+/** Sharing for For You / AI is only on when both flags are explicitly true. */
+export function sharingEnabled(settings?: MemberSettings | null): boolean {
+  return settings?.share === true && settings?.ai_ok === true;
 }
 
 export async function forYou(

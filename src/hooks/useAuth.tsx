@@ -11,15 +11,18 @@ import {
 import {
   getMe,
   getPass,
+  getSettings,
   loadStoredRefresh,
   refreshSession,
   setSettings,
+  sharingEnabled,
   signIn as apiSignIn,
   signOut as apiSignOut,
   signUp as apiSignUp,
   storeRefresh,
   verifyEmail as apiVerifyEmail,
   type Me,
+  type MemberSettings,
   type Pass,
   type Session,
 } from "../lib/api";
@@ -61,6 +64,10 @@ type AuthContextValue = {
   signInDemo: () => void;
   toggleFavourite: (id: string) => void;
   updateProfile: (patch: Partial<MemberProfile>) => void;
+  savePrivacy: (patch: {
+    shareCheckIns?: boolean;
+    marketing?: boolean;
+  }) => Promise<void>;
   refreshMember: () => Promise<void>;
   withSession: <T>(fn: (session: Session) => Promise<T>) => Promise<T>;
 };
@@ -78,7 +85,12 @@ const PHASES = [
   "Closing",
 ];
 
-function mapMember(me: Me, pass: Pass | null, live: boolean): MemberProfile {
+function mapMember(
+  me: Me,
+  pass: Pass | null,
+  live: boolean,
+  settings?: MemberSettings | null,
+): MemberProfile {
   const profile = me.profile || {};
   const phase =
     profile.phase !== null && profile.phase !== undefined
@@ -91,8 +103,9 @@ function mapMember(me: Me, pass: Pass | null, live: boolean): MemberProfile {
     discipline: profile.disciplines?.[0] || "Musical theatre",
     stage: phase,
     show: profile.current_work || "",
-    shareCheckIns: true,
-    marketing: false,
+    // Default off until server prefs confirm share + AI consent.
+    shareCheckIns: sharingEnabled(settings),
+    marketing: settings?.marketing === true,
     tier: pass?.tier === "member" ? "Company" : "Debut",
     passNumber: pass?.number || "—",
     passCode: pass?.code,
@@ -155,15 +168,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } catch {
         passData = null;
       }
+      let settings: MemberSettings | null = null;
+      try {
+        const res = await getSettings(s, onSession);
+        settings = res.settings ?? null;
+      } catch {
+        settings = null;
+      }
       setMe(profile);
       setPass(passData);
-      setMember(mapMember(profile, passData, true));
+      setMember(mapMember(profile, passData, true, settings));
       setLive(true);
       try {
         localStorage.setItem("pm.who", (profile.email || "").toLowerCase());
       } catch {
         /* ignore */
       }
+      return { profile, settings };
     },
     [applySession],
   );
@@ -233,21 +254,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async (email: string, code: string) => {
       const next = await apiVerifyEmail({ email, code });
       applySession(next);
-      await hydrate(next);
+      const hydrated = await hydrate(next);
       try {
         const share = localStorage.getItem("pm.share.pending");
         const marketing = localStorage.getItem("pm.marketing.pending");
-        if (share !== null || marketing !== null) {
-          await setSettings(
-            next,
-            {
-              share: share === "1",
-              ai: share === "1",
-              marketing: marketing === "1",
-            },
-            applySession,
-          );
+        const pendingEmail = localStorage.getItem("pm.pending.email") || "";
+        const meEmail = (hydrated.profile.email || "").trim().toLowerCase();
+        if (pendingEmail && pendingEmail !== meEmail) return;
+        if (share === null && marketing === null) return;
+
+        const current = hydrated.settings || {};
+        const patch: { share?: boolean; ai?: boolean; marketing?: boolean } =
+          {};
+        if (
+          share !== null &&
+          (current.share === null || current.share === undefined)
+        ) {
+          patch.share = share === "1";
+          if (share === "1") patch.ai = true;
         }
+        if (
+          marketing !== null &&
+          (current.marketing === null || current.marketing === undefined)
+        ) {
+          patch.marketing = marketing === "1";
+        }
+        if (Object.keys(patch).length) {
+          await setSettings(next, patch, applySession);
+        }
+        [
+          "pm.share.pending",
+          "pm.marketing.pending",
+          "pm.pending.email",
+        ].forEach((k) => localStorage.removeItem(k));
+        await hydrate(next);
       } catch {
         /* preferences can be set later in My details */
       }
@@ -291,6 +331,55 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setMember((prev) => (prev ? { ...prev, ...patch } : prev));
   }, []);
 
+  const savePrivacy = useCallback(
+    async (patch: { shareCheckIns?: boolean; marketing?: boolean }) => {
+      setMember((prev) =>
+        prev
+          ? {
+              ...prev,
+              ...(patch.shareCheckIns !== undefined
+                ? { shareCheckIns: patch.shareCheckIns }
+                : {}),
+              ...(patch.marketing !== undefined
+                ? { marketing: patch.marketing }
+                : {}),
+            }
+          : prev,
+      );
+
+      // Demo / offline: keep the choice on-device only.
+      if (!live || !session) return;
+
+      const body: { share?: boolean; ai?: boolean; marketing?: boolean } = {};
+      if (patch.shareCheckIns !== undefined) {
+        body.share = patch.shareCheckIns;
+        body.ai = patch.shareCheckIns;
+      }
+      if (patch.marketing !== undefined) {
+        body.marketing = patch.marketing;
+      }
+
+      try {
+        const res = await setSettings(session, body, applySession);
+        const st = res.settings || null;
+        setMember((prev) =>
+          prev
+            ? {
+                ...prev,
+                shareCheckIns: sharingEnabled(st),
+                marketing: st?.marketing === true,
+              }
+            : prev,
+        );
+      } catch (err) {
+        // Revert optimistic UI from the last known server hydrate.
+        await hydrate(session);
+        throw err;
+      }
+    },
+    [applySession, hydrate, live, session],
+  );
+
   const refreshMember = useCallback(async () => {
     if (!session) return;
     await hydrate(session);
@@ -320,6 +409,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       signInDemo,
       toggleFavourite,
       updateProfile,
+      savePrivacy,
       refreshMember,
       withSession,
     }),
@@ -338,6 +428,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       signInDemo,
       toggleFavourite,
       updateProfile,
+      savePrivacy,
       refreshMember,
       withSession,
     ],
