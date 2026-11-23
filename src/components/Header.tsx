@@ -42,6 +42,9 @@ export function Header() {
           <LeafMark size={26} />
           <span className="brand__name">Performer Method</span>
         </Link>
+        <span className="sample-pill" title="Using sample practitioners, centres, and demo membership until Supabase is connected">
+          Sample data
+        </span>
 
         <nav className="site-nav" aria-label="Primary">
           {links.map((link) => (
