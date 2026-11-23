@@ -54,7 +54,7 @@ export const practitioners: Practitioner[] = [
     blurb:
       "Master’s-qualified Registered Counsellor with more than 20 years of professional performing arts experience.",
     initials: "CD",
-    photo: "/assets/people/cristina-dagostino.webp",
+    photo: "/brand/people/cristina-dagostino.webp",
   },
   {
     id: "oscar-bridges",
@@ -65,7 +65,7 @@ export const practitioners: Practitioner[] = [
     blurb:
       "Nutrition Counsellor and performer helping touring artists with gut health, energy and food on the road.",
     initials: "OB",
-    photo: "/assets/people/oscar-bridges.webp",
+    photo: "/brand/people/oscar-bridges.webp",
   },
   {
     id: "rosie-harris",
@@ -76,7 +76,7 @@ export const practitioners: Practitioner[] = [
     blurb:
       "Singing teacher and vocal coach drawing on voice science, somatic work and neurodiversity-affirming practice.",
     initials: "RH",
-    photo: "/assets/people/rosie-harris.webp",
+    photo: "/brand/people/rosie-harris.webp",
   },
   {
     id: "bronwyn-claassen",

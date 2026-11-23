@@ -11,19 +11,19 @@ const pillarMeta: Record<
 > = {
   mind: {
     tags: "Psychology. Mindfulness. Mental resilience.",
-    image: "/assets/pillar-mind.webp",
+    image: "/brand/pillar-mind.webp",
   },
   body: {
     tags: "Physio. Strength. Recovery between shows.",
-    image: "/assets/pillar-body.webp",
+    image: "/brand/pillar-body.webp",
   },
   fuel: {
     tags: "Nutrition. Energy. Tour-proof habits.",
-    image: "/assets/pillar-fuel.webp",
+    image: "/brand/pillar-fuel.webp",
   },
   purpose: {
     tags: "Career. Identity. Longevity.",
-    image: "/assets/pillar-purpose.webp",
+    image: "/brand/pillar-purpose.webp",
   },
 };
 
@@ -138,7 +138,7 @@ export function Home() {
         <div className="pillars-copy">
           <h2 id="pillarsTitle" className="pillars-title">
             <img
-              src="/assets/pm-the-method.svg"
+              src="/brand/pm-the-method.svg"
               alt="The Method"
               width={424}
               height={40}
@@ -214,7 +214,7 @@ export function Home() {
           <div className="hm-card" aria-hidden>
             <div className="hm-card-sheen" />
             <div className="hm-card-top">
-              <img src="/assets/pm-emblem.svg" alt="" width={30} height={30} />
+              <img src="/brand/pm-emblem.svg" alt="" width={30} height={30} />
               <span>{member ? "Member" : "Debut"}</span>
             </div>
             <p className="hm-card-kicker">Performer Pass</p>
@@ -232,7 +232,7 @@ export function Home() {
       <section className="founder home-band" aria-labelledby="founderTitle">
         <div className="founder-img">
           <img
-            src="/assets/founder.webp"
+            src="/brand/founder.webp"
             alt="William Tukia-Edwards"
             width={640}
             height={800}

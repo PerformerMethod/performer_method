@@ -1,6 +1,6 @@
 :root {
-  /* Match performermethod.com */
-  --bg: #fbfbf6;
+  /* Brand (Performer Method) + Liquid Glass materials */
+  --bg: #f4f5f0;
   --cream: #fbfbf6;
   --paper: #fbfbf6;
   --stone: #ebeae5;
@@ -11,9 +11,9 @@
   --muted: #56664f;
   --sage: #8ba580;
   --sage-soft: #dce5d2;
-  --line: rgba(28, 58, 19, 0.14);
-  --line-strong: rgba(28, 58, 19, 0.28);
-  --line-ink: rgba(28, 58, 19, 0.14);
+  --line: rgba(255, 255, 255, 0.55);
+  --line-strong: rgba(28, 58, 19, 0.16);
+  --line-ink: rgba(28, 58, 19, 0.12);
   --mind: #6f8f86;
   --body: #a8633f;
   --fuel: #a3923f;
@@ -21,9 +21,14 @@
   --danger: #a44a3f;
   --ok: #2f6b4f;
 
-  --glass: rgba(242, 242, 236, 0.82);
-  --glass-strong: rgba(251, 251, 246, 0.92);
-  --glass-dark: rgba(28, 58, 19, 0.55);
+  /* Liquid Glass fills */
+  --glass: rgba(255, 255, 255, 0.42);
+  --glass-strong: rgba(255, 255, 255, 0.62);
+  --glass-soft: rgba(251, 251, 246, 0.55);
+  --glass-tint: rgba(220, 229, 210, 0.28);
+  --glass-dark: rgba(28, 58, 19, 0.48);
+  --glass-edge: rgba(255, 255, 255, 0.72);
+  --glass-edge-soft: rgba(255, 255, 255, 0.35);
 
   --font: "Switzer", "Helvetica Neue", Arial, sans-serif;
   --font-display: var(--font);
@@ -39,21 +44,39 @@
   --text-2xl: clamp(2.25rem, 1.6rem + 2.8vw, 4rem);
 
   --gutter: clamp(1rem, 2.4vw, 2rem);
-  --radius-sm: 10px;
-  --radius: 18px;
-  --radius-md: 18px;
+  --radius-sm: 14px;
+  --radius: 22px;
+  --radius-md: 22px;
   --radius-lg: 28px;
-  --radius-xl: 36px;
+  --radius-xl: 40px;
   --r-sm: var(--radius-sm);
   --r-md: var(--radius-md);
   --r-lg: var(--radius-lg);
   --r-xl: var(--radius-xl);
 
-  --header-h: 72px;
-  --tab-h: 72px;
-  --ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --blur: 18px;
-  --shadow-glass: 0 1px 0 var(--line);
+  --header-h: 76px;
+  --tab-h: 78px;
+
+  /* iOS-like spring — snappy, not sluggish */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 280ms;
+  --dur-fast: 180ms;
+
+  --blur: 28px;
+  --blur-strong: 40px;
+  --saturate: 1.55;
+
+  --shadow-glass:
+    0 1px 0 var(--glass-edge),
+    0 10px 40px rgba(28, 58, 19, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  --shadow-float:
+    0 18px 50px -24px rgba(28, 58, 19, 0.28),
+    0 1px 0 rgba(255, 255, 255, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  --shadow-press: 0 4px 16px rgba(28, 58, 19, 0.12);
 
   color-scheme: light;
 }
@@ -61,5 +84,9 @@
 @media (prefers-reduced-motion: reduce) {
   :root {
     --ease: linear;
+    --ease-spring: linear;
+    --ease-out: linear;
+    --dur: 1ms;
+    --dur-fast: 1ms;
   }
 }

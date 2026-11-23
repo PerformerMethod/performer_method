@@ -3,10 +3,10 @@ import { pillars } from "../data/content";
 import "./Method.css";
 
 const pillarImages: Record<string, string> = {
-  mind: "/assets/pillar-mind.webp",
-  body: "/assets/pillar-body.webp",
-  fuel: "/assets/pillar-fuel.webp",
-  purpose: "/assets/pillar-purpose.webp",
+  mind: "/brand/pillar-mind.webp",
+  body: "/brand/pillar-body.webp",
+  fuel: "/brand/pillar-fuel.webp",
+  purpose: "/brand/pillar-purpose.webp",
 };
 
 const pillarTags: Record<string, string> = {
