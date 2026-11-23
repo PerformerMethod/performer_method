@@ -1,37 +1,59 @@
 :root {
-  /* Liquid Glass — luminous wellness, elevated not theatrical-dark */
-  --ink: #14261a;
-  --ink-soft: #2a3d30;
-  --mist: #e8eef0;
-  --paper: #f4f7f8;
-  --glass: rgba(255, 255, 255, 0.52);
-  --glass-strong: rgba(255, 255, 255, 0.72);
-  --glass-dark: rgba(20, 38, 26, 0.55);
-  --line: rgba(255, 255, 255, 0.55);
-  --line-ink: rgba(20, 38, 26, 0.12);
-  --line-strong: rgba(20, 38, 26, 0.2);
-  --muted: #5c6b61;
-  --sage: #6f8f7a;
-  --sage-deep: #3d5c48;
-  --accent: #8fb8a3;
-  --accent-soft: rgba(143, 184, 163, 0.35);
+  /* Match performermethod.com */
+  --bg: #fbfbf6;
+  --cream: #fbfbf6;
+  --paper: #fbfbf6;
+  --stone: #ebeae5;
+  --stone-2: #f2f2ec;
+  --ink: #1c3a13;
+  --ink-2: #2e4a25;
+  --ink-soft: #2e4a25;
+  --muted: #56664f;
+  --sage: #8ba580;
+  --sage-soft: #dce5d2;
+  --line: rgba(28, 58, 19, 0.14);
+  --line-strong: rgba(28, 58, 19, 0.28);
+  --line-ink: rgba(28, 58, 19, 0.14);
+  --mind: #6f8f86;
+  --body: #a8633f;
+  --fuel: #a3923f;
+  --purpose: #7a5a6b;
   --danger: #a44a3f;
   --ok: #2f6b4f;
 
-  --font-display: "Switzer", "Sora", system-ui, sans-serif;
-  --font-body: "Switzer", "Sora", system-ui, sans-serif;
-  --font-mono: "Geist Mono", ui-monospace, monospace;
+  --glass: rgba(242, 242, 236, 0.82);
+  --glass-strong: rgba(251, 251, 246, 0.92);
+  --glass-dark: rgba(28, 58, 19, 0.55);
 
-  --radius-sm: 12px;
-  --radius: 20px;
+  --font: "Switzer", "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font);
+  --font-body: var(--font);
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+  --mono: var(--font-mono);
+
+  --text-xs: clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem);
+  --text-sm: clamp(0.875rem, 0.85rem + 0.12vw, 0.9375rem);
+  --text-base: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
+  --text-lg: clamp(1.125rem, 1.05rem + 0.35vw, 1.375rem);
+  --text-xl: clamp(1.75rem, 1.4rem + 1.5vw, 2.75rem);
+  --text-2xl: clamp(2.25rem, 1.6rem + 2.8vw, 4rem);
+
+  --gutter: clamp(1rem, 2.4vw, 2rem);
+  --radius-sm: 10px;
+  --radius: 18px;
+  --radius-md: 18px;
   --radius-lg: 28px;
   --radius-xl: 36px;
+  --r-sm: var(--radius-sm);
+  --r-md: var(--radius-md);
+  --r-lg: var(--radius-lg);
+  --r-xl: var(--radius-xl);
 
   --header-h: 72px;
   --tab-h: 72px;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --blur: 28px;
-  --shadow-glass: 0 10px 40px rgba(20, 38, 26, 0.08);
+  --blur: 18px;
+  --shadow-glass: 0 1px 0 var(--line);
 
   color-scheme: light;
 }

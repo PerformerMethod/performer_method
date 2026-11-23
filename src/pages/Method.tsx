@@ -2,6 +2,20 @@ import { Link, useParams } from "react-router-dom";
 import { pillars } from "../data/content";
 import "./Method.css";
 
+const pillarImages: Record<string, string> = {
+  mind: "/assets/pillar-mind.webp",
+  body: "/assets/pillar-body.webp",
+  fuel: "/assets/pillar-fuel.webp",
+  purpose: "/assets/pillar-purpose.webp",
+};
+
+const pillarTags: Record<string, string> = {
+  mind: "Psychology. Mindfulness. Mental resilience.",
+  body: "Physio. Strength. Recovery between shows.",
+  fuel: "Nutrition. Energy. Tour-proof habits.",
+  purpose: "Career. Identity. Longevity.",
+};
+
 export function Method() {
   const { pillarId } = useParams();
   const active = pillars.find((p) => p.id === pillarId) ?? pillars[0];
@@ -11,57 +25,51 @@ export function Method() {
       <p className="section-kicker">Education</p>
       <h1 className="section-title">The Method</h1>
       <p className="section-lead">
-        Four pillars for professional performers — condensed into short
-        sections that open for more detail.
+        Four pillars that hold a performing life together. Start with the one
+        that needs you most.
       </p>
 
-      <nav className="method-nav" aria-label="Pillars">
-        {pillars.map((pillar) => (
-          <Link
-            key={pillar.id}
-            to={`/method/${pillar.id}`}
-            className={pillar.id === active.id ? "active" : undefined}
-          >
-            <h3>{pillar.title}</h3>
-            <p>{pillar.summary}</p>
-          </Link>
-        ))}
-      </nav>
+      <div className="method-layout">
+        <div>
+          <nav className="method-nav" aria-label="Pillars">
+            {pillars.map((pillar) => (
+              <Link
+                key={pillar.id}
+                to={`/method/${pillar.id}`}
+                className={pillar.id === active.id ? "active" : undefined}
+              >
+                <h3>{pillar.title}</h3>
+                <p>{pillarTags[pillar.id]}</p>
+              </Link>
+            ))}
+          </nav>
 
-      <h2 className="section-title" style={{ fontSize: "2rem" }}>
-        {active.title}
-      </h2>
-      <p className="section-lead" style={{ marginBottom: "1.25rem" }}>
-        {active.summary}
-      </p>
+          <h2 className="section-title" style={{ fontSize: "2rem" }}>
+            {active.title}
+          </h2>
+          <p className="section-lead" style={{ marginBottom: "1.25rem" }}>
+            {active.summary}
+          </p>
 
-      <div className="accordion">
-        {active.sections.map((section) => (
-          <details key={section.title}>
-            <summary>{section.title}</summary>
-            <p>{section.body}</p>
-          </details>
-        ))}
-      </div>
+          <div className="accordion">
+            {active.sections.map((section) => (
+              <details key={section.title}>
+                <summary>{section.title}</summary>
+                <p>{section.body}</p>
+              </details>
+            ))}
+          </div>
+        </div>
 
-      <div className="guides">
-        <p className="section-kicker">Guides</p>
-        <a
-          href="https://performermethod.com"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Warm-up that travels
-          <span>Opens in a new tab</span>
-        </a>
-        <a
-          href="https://performermethod.com"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Closing week, gently
-          <span>Opens in a new tab</span>
-        </a>
+        <figure className="method-stage" aria-hidden>
+          <img
+            key={active.id}
+            src={pillarImages[active.id]}
+            alt=""
+            width={1024}
+            height={1536}
+          />
+        </figure>
       </div>
     </div>
   );

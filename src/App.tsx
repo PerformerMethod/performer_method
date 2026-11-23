@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
 import { TabBar } from "./components/TabBar";
 import { AuthProvider } from "./hooks/useAuth";
@@ -36,6 +37,7 @@ function AppRoutes() {
         <Route path="/privacy" element={<Legal kind="privacy" />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <Footer />
       <TabBar />
     </div>
   );

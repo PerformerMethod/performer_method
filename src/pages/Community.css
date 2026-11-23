@@ -1,6 +1,7 @@
 .show-band h2 {
   font-size: 1.8rem;
   margin: 0.5rem 0 0.35rem;
+  font-weight: 400;
 }
 
 .show-band p {
@@ -11,8 +12,8 @@
   height: 140px;
   border-radius: var(--radius);
   background:
-    radial-gradient(circle at 20% 30%, rgba(228, 194, 122, 0.4), transparent 45%),
-    linear-gradient(135deg, #241f1a, #4a3b2a);
+    radial-gradient(circle at 20% 30%, rgba(220, 229, 210, 0.55), transparent 45%),
+    linear-gradient(135deg, #1c3a13, #56664f);
   margin-bottom: 0.75rem;
 }
 
@@ -26,13 +27,14 @@
 .community-tile {
   padding: 1.1rem;
   border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--stone-2);
   border: 1px solid var(--line);
 }
 
 .community-tile h3 {
   font-size: 1.25rem;
   margin: 0.25rem 0;
+  font-weight: 400;
 }
 
 .community-tile > p {
@@ -50,7 +52,7 @@
 
 .community-actions button {
   border: 1px solid var(--line-strong);
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--cream);
   border-radius: 999px;
   padding: 0.35rem 0.7rem;
   font-size: 0.78rem;

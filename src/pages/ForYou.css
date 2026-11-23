@@ -6,27 +6,20 @@
 
 .for-you-hero h1 {
   font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 400;
 }
 
 .note-panel {
   padding: 1.25rem 1.35rem;
   border-radius: var(--radius-lg);
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.7),
-    rgba(143, 184, 163, 0.28)
-  );
+  background: var(--sage-soft);
   border: 1px solid var(--line);
-  backdrop-filter: blur(24px) saturate(1.35);
-  -webkit-backdrop-filter: blur(24px) saturate(1.35);
-  box-shadow:
-    var(--shadow-glass),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
   margin-bottom: 1.5rem;
 }
 
 .note-panel p {
   line-height: 1.6;
+  color: var(--ink-2);
 }
 
 .for-you-layout {
@@ -43,26 +36,25 @@
 .pick-tile {
   padding: 1rem 1.1rem;
   border-radius: var(--radius);
-  background: var(--glass);
+  background: var(--stone-2);
   border: 1px solid var(--line);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
 }
 
 .pick-tile span {
   display: block;
   font-size: 0.72rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted);
   margin-bottom: 0.35rem;
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-weight: 500;
 }
 
 .pick-tile h3 {
   font-size: 1.25rem;
   margin-bottom: 0.3rem;
+  font-weight: 400;
 }
 
 .pick-tile p {
@@ -83,7 +75,7 @@
 .week-bars span {
   display: block;
   border-radius: 8px 8px 4px 4px;
-  background: linear-gradient(180deg, #cfe5d8, var(--sage-deep));
+  background: linear-gradient(180deg, var(--sage-soft), var(--ink));
   opacity: 0.9;
 }
 
@@ -98,21 +90,18 @@
   margin-top: 2rem;
   padding: 1.35rem;
   border-radius: var(--radius-lg);
-  background: linear-gradient(160deg, rgba(20, 38, 26, 0.88), rgba(61, 92, 72, 0.85));
-  color: var(--paper);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  background: var(--ink);
+  color: var(--cream);
 }
 
 .check-in h2 {
   font-size: 1.7rem;
   margin-bottom: 0.5rem;
+  font-weight: 400;
 }
 
 .check-in p {
-  color: rgba(247, 248, 249, 0.72);
+  color: rgba(251, 251, 246, 0.72);
   margin-bottom: 1rem;
   line-height: 1.55;
 }
@@ -125,7 +114,7 @@
 
 .slider-field label {
   font-size: 0.85rem;
-  color: rgba(247, 248, 249, 0.75);
+  color: rgba(251, 251, 246, 0.75);
 }
 
 .day-options {
@@ -136,23 +125,23 @@
 }
 
 .day-options button {
-  border: 1px solid rgba(247, 248, 249, 0.25);
+  border: 1px solid rgba(251, 251, 246, 0.25);
   background: transparent;
-  color: var(--paper);
+  color: var(--cream);
   border-radius: 999px;
   padding: 0.5rem 0.85rem;
   cursor: pointer;
 }
 
 .day-options button.is-active {
-  background: #d7ebe0;
+  background: var(--sage-soft);
   color: var(--ink);
-  border-color: #d7ebe0;
+  border-color: var(--sage-soft);
 }
 
 .check-in input[type="range"] {
   width: 100%;
-  accent-color: #9fc4b0;
+  accent-color: var(--sage);
 }
 
 @media (max-width: 860px) {
