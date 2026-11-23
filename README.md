@@ -20,6 +20,18 @@ npm install
 npm run dev
 ```
 
+## Native app
+
+The iOS and Android app lives in `mobile/`. It is an Expo / React Native app (system tab bar, native stack), not a wrapper around the website. Sample member Alex Rivera opens For You, Pass, and Community on device. Live API keys stay on the server.
+
+```bash
+cd mobile
+npm install
+npx expo start
+```
+
+Press `i` for the iOS simulator (macOS), `a` for Android, or scan the QR code with Expo Go. `npm run typecheck` checks the app without a simulator.
+
 ## Build
 
 ```bash
