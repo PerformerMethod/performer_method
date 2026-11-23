@@ -1,0 +1,97 @@
+.method-nav {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin: 1.5rem 0 2rem;
+}
+
+.method-nav a {
+  padding: 1rem;
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid var(--line);
+  transition: border-color 180ms var(--ease), transform 180ms var(--ease);
+}
+
+.method-nav a:hover,
+.method-nav a.active {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+}
+
+.method-nav h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.35rem;
+}
+
+.method-nav p {
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.accordion {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.accordion details {
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--line);
+  padding: 0.85rem 1rem;
+}
+
+.accordion summary {
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  list-style: none;
+}
+
+.accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+.accordion details[open] summary {
+  color: var(--spotlight-deep);
+  margin-bottom: 0.55rem;
+}
+
+.accordion details p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.guides {
+  margin-top: 2rem;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.guides a {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.guides a span {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 800px) {
+  .method-nav {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .method-nav {
+    grid-template-columns: 1fr;
+  }
+}

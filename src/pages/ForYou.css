@@ -1,0 +1,150 @@
+.for-you-hero {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.for-you-hero h1 {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+}
+
+.note-panel {
+  padding: 1.25rem 1.35rem;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(
+    135deg,
+    rgba(228, 194, 122, 0.22),
+    rgba(255, 255, 255, 0.65)
+  );
+  border: 1px solid rgba(201, 160, 78, 0.28);
+  margin-bottom: 1.5rem;
+}
+
+.note-panel p {
+  line-height: 1.6;
+}
+
+.for-you-layout {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 1.25rem;
+}
+
+.picks-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.pick-tile {
+  padding: 1rem 1.1rem;
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid var(--line);
+}
+
+.pick-tile span {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+  font-weight: 600;
+}
+
+.pick-tile h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.3rem;
+}
+
+.pick-tile p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.week-bars {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.45rem;
+  align-items: end;
+  min-height: 110px;
+  margin: 1rem 0;
+}
+
+.week-bars span {
+  display: block;
+  border-radius: 8px 8px 4px 4px;
+  background: linear-gradient(180deg, var(--spotlight), var(--sage));
+  opacity: 0.85;
+}
+
+.care-notes {
+  margin-top: 1rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.check-in {
+  margin-top: 2rem;
+  padding: 1.35rem;
+  border-radius: var(--radius-lg);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.check-in h2 {
+  font-size: 1.7rem;
+  margin-bottom: 0.5rem;
+}
+
+.check-in p {
+  color: rgba(247, 248, 249, 0.72);
+  margin-bottom: 1rem;
+  line-height: 1.55;
+}
+
+.slider-field {
+  display: grid;
+  gap: 0.35rem;
+  margin-bottom: 0.9rem;
+}
+
+.slider-field label {
+  font-size: 0.85rem;
+  color: rgba(247, 248, 249, 0.75);
+}
+
+.day-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.day-options button {
+  border: 1px solid rgba(247, 248, 249, 0.25);
+  background: transparent;
+  color: var(--paper);
+  border-radius: 999px;
+  padding: 0.5rem 0.85rem;
+  cursor: pointer;
+}
+
+.day-options button.is-active {
+  background: var(--spotlight);
+  color: var(--ink);
+  border-color: var(--spotlight);
+}
+
+.check-in input[type="range"] {
+  width: 100%;
+  accent-color: var(--spotlight);
+}
+
+@media (max-width: 860px) {
+  .for-you-layout {
+    grid-template-columns: 1fr;
+  }
+}

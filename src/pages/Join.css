@@ -1,0 +1,43 @@
+.join-shell {
+  max-width: 520px;
+}
+
+.join-form {
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 1.5rem;
+}
+
+.check {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.65rem;
+  align-items: start;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.check a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  color: var(--ink);
+}
+
+.join-hint {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.join-error {
+  margin-top: 0.85rem;
+  color: var(--danger);
+  font-size: 0.9rem;
+}
+
+.join-demo {
+  margin-top: 1.25rem;
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

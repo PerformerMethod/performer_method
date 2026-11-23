@@ -1,0 +1,55 @@
+.lifecycle-ring {
+  display: grid;
+  place-items: center;
+  animation: ring-glow 1.4s var(--ease) both;
+}
+
+.lifecycle-ring__svg {
+  overflow: visible;
+}
+
+.lifecycle-node {
+  cursor: pointer;
+}
+
+.lifecycle-node__dot {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+  transition:
+    fill 220ms var(--ease),
+    stroke 220ms var(--ease),
+    r 220ms var(--ease);
+}
+
+.lifecycle-node:hover .lifecycle-node__dot,
+.lifecycle-node.is-active .lifecycle-node__dot {
+  fill: var(--spotlight);
+  stroke: var(--spotlight-deep);
+}
+
+.lifecycle-node__label {
+  font-family: var(--font-body);
+  font-size: 10px;
+  fill: var(--muted);
+}
+
+.lifecycle-ring.is-compact .lifecycle-node__label {
+  font-size: 8px;
+}
+
+.lifecycle-ring__center-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  fill: var(--ink);
+}
+
+.lifecycle-ring.is-compact .lifecycle-ring__center-title {
+  font-size: 16px;
+}
+
+.lifecycle-ring__center-sub {
+  font-family: var(--font-body);
+  font-size: 11px;
+  fill: var(--muted);
+}

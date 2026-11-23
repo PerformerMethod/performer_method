@@ -1,0 +1,36 @@
+:root {
+  /* Stage ink + warm spotlight — theatrical wellbeing */
+  --ink: #12100e;
+  --ink-soft: #2a2621;
+  --stage: #1a1714;
+  --spotlight: #e4c27a;
+  --spotlight-deep: #c9a04e;
+  --mist: #eef0f2;
+  --paper: #f7f8f9;
+  --line: rgba(18, 16, 14, 0.1);
+  --line-strong: rgba(18, 16, 14, 0.18);
+  --muted: #6b6560;
+  --sage: #5f7a6a;
+  --danger: #a44a3f;
+  --ok: #3d7a5c;
+
+  --font-display: "Instrument Serif", Georgia, serif;
+  --font-body: "Sora", system-ui, sans-serif;
+
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 22px;
+
+  --header-h: 64px;
+  --tab-h: 68px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --shadow-soft: 0 18px 50px rgba(18, 16, 14, 0.12);
+
+  color-scheme: light;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --ease: linear;
+  }
+}
