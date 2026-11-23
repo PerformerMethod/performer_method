@@ -13,10 +13,15 @@
   border-radius: var(--radius-lg);
   background: linear-gradient(
     135deg,
-    rgba(228, 194, 122, 0.22),
-    rgba(255, 255, 255, 0.65)
+    rgba(255, 255, 255, 0.7),
+    rgba(143, 184, 163, 0.28)
   );
-  border: 1px solid rgba(201, 160, 78, 0.28);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(24px) saturate(1.35);
+  -webkit-backdrop-filter: blur(24px) saturate(1.35);
+  box-shadow:
+    var(--shadow-glass),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
   margin-bottom: 1.5rem;
 }
 
@@ -38,8 +43,11 @@
 .pick-tile {
   padding: 1rem 1.1rem;
   border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.62);
+  background: var(--glass);
   border: 1px solid var(--line);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
 }
 
 .pick-tile span {
@@ -75,8 +83,8 @@
 .week-bars span {
   display: block;
   border-radius: 8px 8px 4px 4px;
-  background: linear-gradient(180deg, var(--spotlight), var(--sage));
-  opacity: 0.85;
+  background: linear-gradient(180deg, #cfe5d8, var(--sage-deep));
+  opacity: 0.9;
 }
 
 .care-notes {
@@ -90,8 +98,12 @@
   margin-top: 2rem;
   padding: 1.35rem;
   border-radius: var(--radius-lg);
-  background: var(--ink);
+  background: linear-gradient(160deg, rgba(20, 38, 26, 0.88), rgba(61, 92, 72, 0.85));
   color: var(--paper);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .check-in h2 {
@@ -133,14 +145,14 @@
 }
 
 .day-options button.is-active {
-  background: var(--spotlight);
+  background: #d7ebe0;
   color: var(--ink);
-  border-color: var(--spotlight);
+  border-color: #d7ebe0;
 }
 
 .check-in input[type="range"] {
   width: 100%;
-  accent-color: var(--spotlight);
+  accent-color: #9fc4b0;
 }
 
 @media (max-width: 860px) {

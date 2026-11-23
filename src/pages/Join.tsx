@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { Link, Navigate } from "react-router-dom";
+import { requestMagicCode } from "../lib/api";
 import { useAuth } from "../hooks/useAuth";
 import "./Join.css";
 
@@ -12,16 +13,26 @@ export function Join() {
   const [share, setShare] = useState(true);
   const [marketing, setMarketing] = useState(false);
   const [error, setError] = useState("");
+  const [serviceNote, setServiceNote] = useState("");
+  const [busy, setBusy] = useState(false);
 
   if (member) return <Navigate to="/for-you" replace />;
 
-  const sendCode = (e: FormEvent) => {
+  const sendCode = async (e: FormEvent) => {
     e.preventDefault();
     if (!email.includes("@")) {
       setError("Enter a valid email.");
       return;
     }
+    setBusy(true);
     setError("");
+    const result = await requestMagicCode(email);
+    setBusy(false);
+    setServiceNote(
+      result.status === "sample"
+        ? result.detail ?? "Sample mode — Resend email not connected here."
+        : "Code requested via pm-api.",
+    );
     setCodeSent(true);
   };
 
@@ -41,12 +52,12 @@ export function Join() {
 
   return (
     <div className="page">
-      <div className="join-shell">
+      <div className="join-shell glass" style={{ padding: "1.5rem", borderRadius: "var(--radius-xl)" }}>
         <p className="section-kicker">Membership</p>
-        <h1 className="section-title">Join Performer Method</h1>
+        <h1 className="section-title">Join The Performer Method</h1>
         <p className="section-lead">
-          Sign up with email, confirm a code, and unlock For You, Community, and
-          your Performer Pass.
+          Email + code via Supabase Auth and Resend. For You notes use Claude
+          only after you opt in to sharing check-ins.
         </p>
 
         {!codeSent ? (
@@ -62,14 +73,17 @@ export function Join() {
                 required
               />
             </div>
-            <button type="submit" className="btn btn--spotlight">
-              Send confirmation code
+            <button type="submit" className="btn btn--spotlight" disabled={busy}>
+              {busy ? "Sending…" : "Send confirmation code"}
             </button>
           </form>
         ) : (
           <form className="join-form" onSubmit={confirm}>
+            {serviceNote ? (
+              <p className="service-banner">{serviceNote}</p>
+            ) : null}
             <p className="join-hint">
-              Demo mode: enter any 4+ digit code for {email}.
+              Demo confirm: enter any 4+ digit code for {email}.
             </p>
             <div className="field">
               <label htmlFor="code">Confirmation code</label>
@@ -88,8 +102,7 @@ export function Join() {
                 onChange={(e) => setAgeOk(e.target.checked)}
               />
               <span>
-                I am 18+ and agree to the{" "}
-                <Link to="/terms">Terms</Link> and{" "}
+                I am 18+ and agree to the <Link to="/terms">Terms</Link> and{" "}
                 <Link to="/privacy">Privacy Policy</Link>.
               </span>
             </label>
@@ -100,8 +113,8 @@ export function Join() {
                 onChange={(e) => setShare(e.target.checked)}
               />
               <span>
-                Share check-ins so For You can feel personal (includes AI-written
-                notes from site content only).
+                Share check-ins so For You can feel personal (Claude writes from
+                site content only — never diagnoses).
               </span>
             </label>
             <label className="check">
@@ -110,7 +123,7 @@ export function Join() {
                 checked={marketing}
                 onChange={(e) => setMarketing(e.target.checked)}
               />
-              <span>Send me marketing emails.</span>
+              <span>Send me marketing emails (Resend).</span>
             </label>
             <button type="submit" className="btn btn--spotlight">
               Confirm and join

@@ -13,7 +13,7 @@
 }
 
 .lifecycle-node__dot {
-  fill: var(--paper);
+  fill: rgba(255, 255, 255, 0.75);
   stroke: var(--ink);
   stroke-width: 1.5;
   transition:
@@ -24,8 +24,8 @@
 
 .lifecycle-node:hover .lifecycle-node__dot,
 .lifecycle-node.is-active .lifecycle-node__dot {
-  fill: var(--spotlight);
-  stroke: var(--spotlight-deep);
+  fill: var(--accent);
+  stroke: var(--sage-deep);
 }
 
 .lifecycle-node__label {

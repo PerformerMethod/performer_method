@@ -12,6 +12,7 @@ export function LeafMark({ size = 28, className }: Props) {
       viewBox="0 0 64 64"
       fill="none"
       aria-hidden="true"
+      style={{ color: "var(--sage-deep)" }}
     >
       <path
         d="M32 8c-3.2 9.2-11 15.4-20 16.4 8.4 1.8 15.1 7.8 18.1 15.9 3-8.1 9.7-14.1 18.1-15.9C43 23.4 35.2 17.2 32 8z"

@@ -38,11 +38,15 @@ export function Header() {
   return (
     <header className={`site-header ${hidden ? "is-hidden" : ""}`}>
       <div className="site-header__inner">
-        <Link to="/" className="brand" aria-label="Performer Method home">
-          <LeafMark size={26} />
-          <span className="brand__name">Performer Method</span>
+        <Link to="/" className="brand" aria-label="The Performer Method home">
+          <LeafMark size={22} />
+          <span className="brand__name">The Performer Method</span>
+          <span className="brand-dot" aria-hidden />
         </Link>
-        <span className="sample-pill" title="Using sample practitioners, centres, and demo membership until Supabase is connected">
+        <span
+          className="sample-pill"
+          title="Sample UX until Supabase session + edge functions answer"
+        >
           Sample data
         </span>
 
@@ -66,7 +70,7 @@ export function Header() {
             </>
           ) : (
             <Link to="/join" className="btn btn--spotlight header-cta">
-              Join
+              Log in
             </Link>
           )}
         </div>

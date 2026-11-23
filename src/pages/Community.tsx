@@ -1,19 +1,31 @@
 import { useState, type FormEvent } from "react";
 import { Navigate } from "react-router-dom";
 import { communityFeed } from "../data/content";
+import { moderateCommunityPost } from "../lib/api";
 import { useAuth } from "../hooks/useAuth";
 import "./Community.css";
 
 export function Community() {
   const { member } = useAuth();
   const [posted, setPosted] = useState(false);
+  const [postNote, setPostNote] = useState("");
 
   if (!member) return <Navigate to="/join" replace />;
 
   const cityFeed = communityFeed.filter((item) => item.city === member.city);
 
-  const onPost = (e: FormEvent) => {
+  const onPost = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const form = new FormData(e.currentTarget);
+    const type = String(form.get("type") ?? "event");
+    const title = String(form.get("title") ?? "");
+    const detail = String(form.get("detail") ?? "");
+    const result = await moderateCommunityPost({ type, title, detail });
+    setPostNote(
+      result.data.live
+        ? "Clean post — would go live at once."
+        : "Held for founder review (flagged or accommodation).",
+    );
     setPosted(true);
   };
 
@@ -59,15 +71,12 @@ export function Community() {
           Share something
         </h2>
         {posted ? (
-          <p style={{ color: "var(--ok)" }}>
-            Post received. Clean posts go live at once; flagged posts and all
-            accommodation wait for founder review.
-          </p>
+          <p style={{ color: "var(--ok)" }}>{postNote}</p>
         ) : (
           <form onSubmit={onPost} className="post-form">
             <div className="field">
               <label htmlFor="post-type">Type</label>
-              <select id="post-type" defaultValue="event">
+              <select id="post-type" name="type" defaultValue="event">
                 <option value="event">Event</option>
                 <option value="class">Class</option>
                 <option value="place">Recommendation</option>
@@ -77,11 +86,16 @@ export function Community() {
             </div>
             <div className="field">
               <label htmlFor="post-title">Title</label>
-              <input id="post-title" required placeholder="What’s happening?" />
+              <input
+                id="post-title"
+                name="title"
+                required
+                placeholder="What’s happening?"
+              />
             </div>
             <div className="field">
               <label htmlFor="post-detail">Details</label>
-              <textarea id="post-detail" rows={3} required />
+              <textarea id="post-detail" name="detail" rows={3} required />
             </div>
             <button type="submit" className="btn">
               Post to {member.city}

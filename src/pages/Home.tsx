@@ -12,28 +12,36 @@ export function Home() {
   return (
     <div className="page page--flush">
       <section className="hero">
-        <div className="hero__bg" aria-hidden />
+        <div className="hero__media" aria-hidden={false}>
+          <img
+            src="/hero.webp"
+            alt="Two performers facing the windows in matching stretches in a bright rehearsal studio"
+            width={1671}
+            height={941}
+            fetchPriority="high"
+          />
+        </div>
         <div className="hero__content">
-          <div className="hero-brand">
-            <LeafMark size={42} />
-            <span className="hero-brand__text">Performer Method</span>
+          <div className="hero-brand glass">
+            <LeafMark size={22} />
+            <span className="hero-brand__text">The Performer Method</span>
           </div>
           <div className="hero-copy">
-            <h1>Wellbeing built for the show calendar.</h1>
+            <h1>Connecting performers with the professionals who understand them.</h1>
             <p>
-              Find practitioners who understand performers, learn the Method,
-              and recover between calls — with a personal Pass when you join.
+              Physiotherapists, voice specialists, counsellors and more — plus
+              the Method, recovery, and a Pass that travels with you.
             </p>
             <div className="hero-actions">
-              <Link to="/practitioners" className="btn btn--spotlight">
+              <Link to="/practitioners" className="btn">
                 Find a practitioner
               </Link>
-              <Link to="/method" className="btn btn--ghost">
-                Explore the Method
+              <Link to={member ? "/pass" : "/join"} className="link-arrow">
+                {member ? "Open your Pass →" : "Join the community →"}
               </Link>
             </div>
             {member ? (
-              <p className="welcome-note">
+              <p className="welcome-note glass">
                 Welcome back, {member.name.split(" ")[0]}. You are in{" "}
                 {member.stage}
                 {member.show ? ` on ${member.show}` : ""}. Your For You page is
@@ -46,19 +54,15 @@ export function Home() {
 
       <div className="page-inner">
         <section className="home-section">
-          <p className="section-kicker">Practitioners</p>
+          <p className="section-kicker">Your support team</p>
           <h2 className="section-title">People who get the work.</h2>
           <p className="section-lead">
-            A directory of practitioners who understand vocal load, eight-show
-            weeks, and the quiet days in between.
+            Physiotherapists, voice specialists, counsellors and more, each
+            chosen because they understand the work you do.
           </p>
           <div className="preview-grid">
             {preview.map((p) => (
-              <Link
-                key={p.id}
-                to="/practitioners"
-                className="person-tile"
-              >
+              <Link key={p.id} to="/practitioners" className="person-tile">
                 <div className="person-tile__avatar">{p.initials}</div>
                 <div>
                   <p className="person-tile__meta">
@@ -74,10 +78,10 @@ export function Home() {
 
         <section className="home-section">
           <p className="section-kicker">The Method</p>
-          <h2 className="section-title">Four pillars. One craft.</h2>
+          <h2 className="section-title">Four pillars that hold a performing life together.</h2>
           <p className="section-lead">
-            Mind, Body, Fuel, and Purpose — short enough for a call day, deep
-            enough for a career.
+            Mind, Body, Fuel, and Purpose — start with the one that needs you
+            most.
           </p>
           <div className="pillar-grid">
             {pillars.map((pillar) => (
@@ -95,10 +99,10 @@ export function Home() {
 
         <section className="home-section">
           <p className="section-kicker">Performer Pass</p>
-          <h2 className="section-title">Partner offers that travel with you.</h2>
+          <h2 className="section-title">One pass, wherever you go.</h2>
           <div className="pass-band">
             <div>
-              <h3>A digital pass for gyms, studios, and recovery spaces.</h3>
+              <h3>Free with every account, with offers from gyms, studios and recovery spaces.</h3>
               <p>
                 Debut is free. Company unlocks deeper partner perks. Partners
                 can check a Pass at the door.
@@ -114,19 +118,20 @@ export function Home() {
 
         <section className="home-section">
           <p className="section-kicker">Founder</p>
-          <h2 className="section-title">Built from inside the industry.</h2>
+          <h2 className="section-title">Hi, I’m Will.</h2>
           <div className="founder-block">
             <div className="founder-visual" aria-hidden />
-            <div className="founder-copy">
+            <div className="founder-copy glass">
               <p>
-                Performer Method started as a practical answer to a familiar
-                gap: performers need care that understands the schedule, the
-                body, and the identity wrapped around the work.
+                Some of the most valuable knowledge about performance, health,
+                wellbeing, and career longevity isn’t always found in formal
+                training. More often, it’s shared through conversations, trusted
+                recommendations, lived experience, and the people we meet along
+                the way.
               </p>
               <p>
-                The platform brings practitioners, recovery, education, and
-                community into one place — so support is available between
-                auditions, during the run, and after closing night.
+                Credits include Hamilton, Moulin Rouge! The Musical,
+                Beetlejuice, and Baz Luhrmann’s ELVIS.
               </p>
             </div>
           </div>
@@ -134,15 +139,15 @@ export function Home() {
 
         <section className="home-section">
           <p className="section-kicker">Lifecycle</p>
-          <h2 className="section-title">From audition to closing.</h2>
+          <h2 className="section-title">Where are you right now?</h2>
           <div className="lifecycle-home">
             <div>
               <p className="section-lead">
-                Eight stages of a show, each with guidance for the load you are
-                actually carrying.
+                Eight stages of a show — from Audition to Closing — with
+                guidance for the load you are actually carrying.
               </p>
               <p style={{ marginTop: "1.25rem" }}>
-                <Link to="/lifecycle" className="btn">
+                <Link to="/lifecycle" className="btn btn--glass">
                   Open the ring
                 </Link>
               </p>
@@ -156,8 +161,10 @@ export function Home() {
           <h2 className="section-title">Care between the calls.</h2>
           <div className="journal-recovery">
             <div className="soft-panel">
-              <h3>Daily check-in</h3>
-              <p>
+              <h3 style={{ fontSize: "1.55rem", marginBottom: "0.55rem" }}>
+                Daily check-in
+              </h3>
+              <p style={{ color: "var(--muted)", lineHeight: 1.6, marginBottom: "1rem" }}>
                 One question at a time for mind, body, voice, and energy —
                 shaping a quieter For You page for members.
               </p>
@@ -166,10 +173,12 @@ export function Home() {
               </Link>
             </div>
             <div className="soft-panel">
-              <h3>Recovery directory</h3>
-              <p>
-                Sauna, ice bath, and contrast therapy centres across NSW, VIC,
-                QLD, and WA.
+              <h3 style={{ fontSize: "1.55rem", marginBottom: "0.55rem" }}>
+                Recovery centres
+              </h3>
+              <p style={{ color: "var(--muted)", lineHeight: 1.6, marginBottom: "1rem" }}>
+                Saunas, ice baths and steam rooms across Australia, for the days
+                after a big week.
               </p>
               <Link to="/recovery" className="btn">
                 Find recovery

@@ -6,7 +6,12 @@ Wellbeing platform for professional performers — practitioners, the Method, re
 
 - Vite + React + TypeScript
 - React Router
-- Demo auth in-browser (Supabase / Claude / Resend to be wired next)
+- Public edge base: `pm-api` / `pm-recovery` on Supabase (see `src/lib/api.ts`)
+- Secrets stay in Edge Function env — never in the browser:
+  - `ANTHROPIC_API_KEY` (For You + moderation)
+  - `RESEND_API_KEY` (auth codes, alerts)
+  - `SUPABASE_SERVICE_ROLE_KEY` (server only)
+- Browser uses sample-data fallbacks until a live session answers
 
 ## Develop
 
