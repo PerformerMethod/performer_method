@@ -1,20 +1,68 @@
-import { useMemo, useState } from "react";
-import { practitioners, specialties } from "../data/content";
+import { useEffect, useMemo, useState } from "react";
+import { getDirectory, type Listing } from "../lib/api";
+import { practitioners as samplePractitioners, specialties } from "../data/content";
 import { useAuth } from "../hooks/useAuth";
 import "./Directory.css";
+
+type Card = {
+  id: string;
+  name: string;
+  specialty: string;
+  location: string;
+  city: string;
+  blurb: string;
+  initials: string;
+};
+
+function listingToCard(l: Listing): Card {
+  const parts = (l.name || "?").trim().split(/\s+/);
+  const initials = parts
+    .slice(0, 2)
+    .map((p) => p[0]?.toUpperCase() || "")
+    .join("");
+  return {
+    id: l.id,
+    name: l.name,
+    specialty: l.category || l.role || "Practitioner",
+    location: l.place || "",
+    city: (l.place || "").split(/[-–,]/)[0]?.trim() || "Australia",
+    blurb: l.bio || l.practice || l.role || "",
+    initials: initials || "PM",
+  };
+}
 
 export function Practitioners() {
   const { member, favourites, toggleFavourite } = useAuth();
   const [query, setQuery] = useState("");
   const [specialty, setSpecialty] = useState("All");
   const [city, setCity] = useState("All");
+  const [cards, setCards] = useState<Card[]>(
+    samplePractitioners.map((p) => ({ ...p, city: p.city })),
+  );
+  const [source, setSource] = useState<"live" | "sample">("sample");
+
+  useEffect(() => {
+    getDirectory()
+      .then((data) => {
+        if (data.listings?.length) {
+          setCards(data.listings.map(listingToCard));
+          setSource("live");
+        }
+      })
+      .catch(() => setSource("sample"));
+  }, []);
+
+  const specialtyOptions = useMemo(() => {
+    const fromCards = Array.from(new Set(cards.map((c) => c.specialty))).sort();
+    return ["All", ...(fromCards.length ? fromCards : [...specialties])];
+  }, [cards]);
 
   const cities = useMemo(
-    () => ["All", ...Array.from(new Set(practitioners.map((p) => p.city)))],
-    [],
+    () => ["All", ...Array.from(new Set(cards.map((p) => p.city))).sort()],
+    [cards],
   );
 
-  const filtered = practitioners.filter((p) => {
+  const filtered = cards.filter((p) => {
     const q = query.trim().toLowerCase();
     const matchesQuery =
       !q ||
@@ -34,6 +82,9 @@ export function Practitioners() {
         Find practitioners who understand performers, filtered by specialty and
         location.
       </p>
+      <p className="service-banner" style={{ margin: "1rem 0" }}>
+        {source === "live" ? "Live directory from pm-api" : "Sample directory"}
+      </p>
 
       <div className="directory-toolbar">
         <div className="search-bar">
@@ -48,14 +99,7 @@ export function Practitioners() {
           </div>
         </div>
         <div className="chip-row" role="group" aria-label="Specialty">
-          <button
-            type="button"
-            className={`chip ${specialty === "All" ? "is-active" : ""}`}
-            onClick={() => setSpecialty("All")}
-          >
-            All
-          </button>
-          {specialties.map((s) => (
+          {specialtyOptions.map((s) => (
             <button
               key={s}
               type="button"
@@ -94,7 +138,11 @@ export function Practitioners() {
                     {p.specialty} · {p.location}
                   </p>
                   <h3>{p.name}</h3>
-                  <p>{p.blurb}</p>
+                  <p>
+                    {p.blurb.length > 160
+                      ? `${p.blurb.slice(0, 157)}…`
+                      : p.blurb}
+                  </p>
                 </div>
                 {member ? (
                   <button
@@ -119,7 +167,7 @@ export function Practitioners() {
           Practitioners can apply to join the directory. Submissions are emailed
           to the founder for review.
         </p>
-        <a className="btn" href="mailto:hello@performermethod.com">
+        <a className="btn" href="mailto:will@performermethod.com">
           Apply to join
         </a>
       </div>

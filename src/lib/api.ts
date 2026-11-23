@@ -1,127 +1,330 @@
 /**
- * Service boundary for Performer Method.
+ * Client for the live Performer Method edge functions.
+ * Secrets (Anthropic, Resend, service role) stay in Supabase Function env.
+ * Browser only sends session Bearer tokens + JSON bodies.
  *
- * Secrets never live in the browser:
- * - ANTHROPIC_API_KEY → Supabase Edge Function env (pm-recovery)
- * - RESEND_API_KEY → Edge Function env
- * - SUPABASE_SERVICE_ROLE_KEY → Edge Function env only
- *
- * The browser talks to public edge endpoints + Supabase Auth (anon).
- * Until keys/session are available, UX falls back to sample data.
+ * Locally, Vite proxies /pm-api and /pm-recovery to bypass CORS
+ * (production CORS allows performermethod.com only).
  */
 
-export const PM_API_BASE =
-  (typeof window !== "undefined" &&
-    (window as Window & { __PM_API_BASE__?: string }).__PM_API_BASE__) ||
-  "https://uovcicqaxqzziregyxxz.supabase.co/functions/v1/pm-api";
-
-export const PM_RECOVERY_BASE = PM_API_BASE.replace(/pm-api$/, "pm-recovery");
-
-export type ServiceStatus = "live" | "sample";
-
-export type ApiResult<T> = {
-  status: ServiceStatus;
-  data: T;
-  detail?: string;
+export type Session = {
+  access_token: string;
+  refresh_token: string;
+  expires_in?: number;
+  token_type?: string;
 };
 
-async function tryJson<T>(
-  url: string,
-  init?: RequestInit,
-): Promise<T | null> {
+export type Me = {
+  name?: string;
+  email?: string;
+  since?: string;
+  practitioner?: boolean;
+  profile?: {
+    city?: string;
+    disciplines?: string[];
+    current_work?: string;
+    phase?: number | null;
+    focus?: string[];
+  };
+};
+
+export type Pass = {
+  name: string;
+  number: string;
+  code: string;
+  tier: "debut" | "member" | string;
+  status: "active" | "paused" | string;
+  issued_at?: string;
+};
+
+export type Listing = {
+  id: string;
+  name: string;
+  role?: string;
+  category?: string;
+  place?: string;
+  practice?: string;
+  bio?: string;
+  website?: string;
+  instagram?: string;
+  booking_url?: string;
+  photo_url?: string;
+};
+
+const AUTH_KEY = "pm.auth";
+
+export function apiBase() {
+  if (import.meta.env.DEV) return "/pm-api";
+  if (typeof window !== "undefined" && window.__PM_API_BASE__) {
+    return window.__PM_API_BASE__;
+  }
+  return "https://uovcicqaxqzziregyxxz.supabase.co/functions/v1/pm-api";
+}
+
+export function recoveryBase() {
+  return apiBase().replace(/\/pm-api\/?$/, "/pm-recovery");
+}
+
+export function loadStoredRefresh(): string | null {
   try {
-    const res = await fetch(url, {
-      ...init,
-      headers: {
-        "Content-Type": "application/json",
-        ...(init?.headers ?? {}),
-      },
-    });
-    if (!res.ok) return null;
-    return (await res.json()) as T;
+    const raw = JSON.parse(localStorage.getItem(AUTH_KEY) || "null");
+    return raw?.r ?? null;
   } catch {
     return null;
   }
 }
 
-/** Auth / profile / Pass — pm-api */
-export async function requestMagicCode(email: string): Promise<ApiResult<{ sent: boolean }>> {
-  const live = await tryJson<{ sent?: boolean }>(`${PM_API_BASE}/auth/request-code`, {
-    method: "POST",
-    body: JSON.stringify({ email }),
-  });
-  if (live) return { status: "live", data: { sent: true } };
-  return {
-    status: "sample",
-    data: { sent: true },
-    detail: "Demo mode — confirmation UI continues without Resend.",
-  };
+export function storeRefresh(refresh: string | null) {
+  try {
+    if (refresh) localStorage.setItem(AUTH_KEY, JSON.stringify({ r: refresh }));
+    else localStorage.removeItem(AUTH_KEY);
+  } catch {
+    /* ignore */
+  }
 }
 
-/** Check-ins / For You / Community / AI — pm-recovery */
-export async function fetchForYouPicks(payload: {
-  memberId: string;
-  mind: number;
-  body: number;
-  voice: number;
-  energy: number;
-  dayKind: string;
-}): Promise<
-  ApiResult<{
-    note: string;
-    practice: string;
-    read: string;
-    practitionerHint: string;
-    weekSummary: string;
-  }>
-> {
-  const live = await tryJson<{
-    note: string;
-    practice: string;
-    read: string;
-    practitionerHint: string;
-    weekSummary: string;
-  }>(`${PM_RECOVERY_BASE}/for-you`, {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
+type ApiOpts = {
+  method?: string;
+  body?: unknown;
+  authenticated?: boolean;
+  retry?: boolean;
+  base?: string;
+  session?: Session | null;
+  onSession?: (s: Session | null) => void;
+};
 
-  if (live) return { status: "live", data: live };
-
-  return {
-    status: "sample",
-    data: {
-      note: `Today looks like a ${payload.dayKind.toLowerCase()}. Keep the warm-up short, drink early, and let the notes stay in the room.`,
-      practice: "Two-minute exhale reset",
-      read: "Show-day mobility",
-      practitionerHint: "Suggested when load runs high",
-      weekSummary:
-        "A steady midweek with a softer Tuesday — you have been protecting energy better than last week.",
-    },
-    detail: "Sample picks until Claude runs behind pm-recovery.",
-  };
+export class ApiError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ApiError";
+  }
 }
 
-export async function moderateCommunityPost(body: {
-  title: string;
-  detail: string;
-  type: string;
-}): Promise<ApiResult<{ verdict: "clean" | "flagged"; live: boolean }>> {
-  const live = await tryJson<{ verdict: "clean" | "flagged" }>(
-    `${PM_RECOVERY_BASE}/community/moderate`,
-    { method: "POST", body: JSON.stringify(body) },
-  );
-  if (live)
-    return {
-      status: "live",
-      data: { verdict: live.verdict, live: live.verdict === "clean" },
-    };
-  return {
-    status: "sample",
-    data: {
-      verdict: body.type === "accommodation" ? "flagged" : "clean",
-      live: body.type !== "accommodation",
-    },
-    detail: "Sample moderation rules until Anthropic moderation is connected.",
+export async function api<T = unknown>(
+  route: string,
+  {
+    method = "GET",
+    body,
+    authenticated = true,
+    retry = true,
+    base,
+    session = null,
+    onSession,
+  }: ApiOpts = {},
+): Promise<T> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
   };
+  if (authenticated && session?.access_token) {
+    headers.Authorization = `Bearer ${session.access_token}`;
+  }
+
+  const res = await fetch(`${base || apiBase()}${route}`, {
+    method,
+    headers,
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
+
+  const data = (await res.json().catch(() => ({
+    error: "The account service did not respond as expected.",
+  }))) as { error?: string } & T;
+
+  if (res.status === 401 && session?.refresh_token && retry) {
+    const renewed = await api<Session>("/api/auth/refresh", {
+      method: "POST",
+      body: { refresh_token: session.refresh_token },
+      authenticated: false,
+      retry: false,
+    });
+    onSession?.(renewed);
+    return api<T>(route, {
+      method,
+      body,
+      authenticated,
+      retry: false,
+      base,
+      session: renewed,
+      onSession,
+    });
+  }
+
+  if (!res.ok) throw new ApiError(data.error || "That action could not be completed.");
+  return data as T;
+}
+
+export async function getStatus() {
+  return api<{
+    database: boolean;
+    signupEnabled: boolean;
+  }>("/api/status", { authenticated: false });
+}
+
+export async function signUp(body: {
+  name: string;
+  email: string;
+  password: string;
+  consent: boolean;
+}) {
+  return api<{ email?: string }>("/api/auth/signup", {
+    method: "POST",
+    body,
+    authenticated: false,
+  });
+}
+
+export async function verifyEmail(body: { email: string; code: string }) {
+  return api<Session>("/api/auth/verify-email", {
+    method: "POST",
+    body,
+    authenticated: false,
+  });
+}
+
+export async function resendCode(email: string) {
+  return api("/api/auth/resend", {
+    method: "POST",
+    body: { email },
+    authenticated: false,
+  });
+}
+
+export async function signIn(body: { email: string; password: string }) {
+  return api<Session>("/api/auth/signin", {
+    method: "POST",
+    body,
+    authenticated: false,
+  });
+}
+
+export async function refreshSession(refresh_token: string) {
+  return api<Session>("/api/auth/refresh", {
+    method: "POST",
+    body: { refresh_token },
+    authenticated: false,
+    retry: false,
+  });
+}
+
+export async function signOut(session: Session | null) {
+  if (!session) return;
+  try {
+    await api("/api/auth/signout", { method: "POST", session });
+  } catch {
+    /* ignore */
+  }
+}
+
+export async function getMe(session: Session, onSession?: (s: Session | null) => void) {
+  return api<Me>("/api/me", { session, onSession });
+}
+
+export async function getPass(session: Session, onSession?: (s: Session | null) => void) {
+  return api<Pass>("/api/pass", { session, onSession });
+}
+
+export async function getDirectory() {
+  return api<{ listings: Listing[] }>("/api/directory", { authenticated: false });
+}
+
+export async function saveCheckins(
+  session: Session,
+  items: unknown[],
+  freq: unknown,
+  onSession?: (s: Session | null) => void,
+) {
+  return api("/me/checkins", {
+    method: "POST",
+    body: { items, freq },
+    base: recoveryBase(),
+    session,
+    onSession,
+  });
+}
+
+export async function setSettings(
+  session: Session,
+  body: { share?: boolean; ai?: boolean; marketing?: boolean },
+  onSession?: (s: Session | null) => void,
+) {
+  return api("/me/settings", {
+    method: "POST",
+    body,
+    base: recoveryBase(),
+    session,
+    onSession,
+  });
+}
+
+export async function forYou(
+  session: Session,
+  body: unknown,
+  onSession?: (s: Session | null) => void,
+) {
+  return api<{
+    practice?: string;
+    reads?: string[];
+    person?: string;
+    line?: string;
+    note?: string;
+  }>("/me/foryou", {
+    method: "POST",
+    body,
+    base: recoveryBase(),
+    session,
+    onSession,
+  });
+}
+
+export async function weeklySummary(
+  session: Session,
+  onSession?: (s: Session | null) => void,
+) {
+  return api<{ summary?: string }>("/me/weekly", {
+    method: "POST",
+    body: {},
+    base: recoveryBase(),
+    session,
+    onSession,
+  });
+}
+
+export async function getCommunity(
+  session: Session,
+  city: string,
+  onSession?: (s: Session | null) => void,
+) {
+  return api<{
+    posts?: Array<{
+      id: string;
+      kind: string;
+      city: string;
+      status: string;
+      data: Record<string, string>;
+    }>;
+    shows?: unknown[];
+  }>(`/me/community?city=${encodeURIComponent(city)}`, {
+    base: recoveryBase(),
+    session,
+    onSession,
+  });
+}
+
+export async function createCommunityPost(
+  session: Session,
+  body: { kind: string; city: string; data: Record<string, string> },
+  onSession?: (s: Session | null) => void,
+) {
+  return api("/me/community/posts", {
+    method: "POST",
+    body,
+    base: recoveryBase(),
+    session,
+    onSession,
+  });
+}
+
+declare global {
+  interface Window {
+    __PM_API_BASE__?: string;
+  }
 }

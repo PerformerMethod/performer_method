@@ -19,7 +19,7 @@ const memberLinks = [
 ];
 
 export function Header() {
-  const { member, signOut } = useAuth();
+  const { member, live, signOut } = useAuth();
   const [hidden, setHidden] = useState(false);
   const [lastY, setLastY] = useState(0);
 
@@ -45,9 +45,13 @@ export function Header() {
         </Link>
         <span
           className="sample-pill"
-          title="Sample UX until Supabase session + edge functions answer"
+          title={
+            live
+              ? "Signed in to live Supabase session"
+              : "Sample UX until you sign in with a live account"
+          }
         >
-          Sample data
+          {live ? "Live" : "Sample"}
         </span>
 
         <nav className="site-nav" aria-label="Primary">

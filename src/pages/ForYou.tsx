@@ -2,22 +2,25 @@ import { useMemo, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { LifecycleRing } from "../components/LifecycleRing";
 import { practitioners } from "../data/content";
-import { fetchForYouPicks } from "../lib/api";
+import { forYou, saveCheckins, weeklySummary } from "../lib/api";
 import { useAuth } from "../hooks/useAuth";
 import "./ForYou.css";
 
 const dayKinds = [
-  "Rehearsal",
-  "Show day",
-  "Audition",
-  "Travel",
+  "Rehearsal day",
+  "Single show day",
+  "Double show day",
+  "Audition day",
+  "Travel day",
   "A day for me",
 ] as const;
 
 export function ForYou() {
-  const { member, favourites } = useAuth();
+  const { member, favourites, session, live, withSession } = useAuth();
   const [step, setStep] = useState(0);
-  const [dayKind, setDayKind] = useState<(typeof dayKinds)[number]>("Show day");
+  const [dayKind, setDayKind] = useState<(typeof dayKinds)[number]>(
+    "Single show day",
+  );
   const [mind, setMind] = useState(6);
   const [body, setBody] = useState(5);
   const [voice, setVoice] = useState(6);
@@ -28,6 +31,7 @@ export function ForYou() {
   const [note, setNote] = useState("");
   const [practice, setPractice] = useState("Two-minute exhale reset");
   const [read, setRead] = useState("Show-day mobility");
+  const [person, setPerson] = useState(practitioners[0].name);
   const [weekSummary, setWeekSummary] = useState(
     "A steady midweek with a softer Tuesday — you have been protecting energy better than last week.",
   );
@@ -45,25 +49,97 @@ export function ForYou() {
       return;
     }
     setBusy(true);
-    const result = await fetchForYouPicks({
-      memberId: member.email,
-      mind,
-      body,
-      voice,
-      energy,
-      dayKind,
-    });
-    setBusy(false);
-    setNote(result.data.note);
-    setPractice(result.data.practice);
-    setRead(result.data.read);
-    setWeekSummary(result.data.weekSummary);
-    setServiceNote(
-      result.status === "sample"
-        ? result.detail ?? "Sample picks"
-        : "Claude picks via pm-recovery",
-    );
-    setDone(true);
+    try {
+      const checkin = {
+        day: dayKind,
+        when: "today",
+        feel: "",
+        pain: body <= 3,
+        sev: body <= 3 ? 11 - body : 0,
+        scores: { mind, body, voice, energy },
+      };
+
+      if (live && session && member.shareCheckIns) {
+        let wroteNote = false;
+        await withSession(async (s) => {
+          await saveCheckins(s, [checkin], {});
+          const picks = await forYou(s, {
+            checkin,
+            stage: member.stage,
+            disciplines: [member.discipline],
+            focus: [],
+            roles: [],
+            candidates: {
+              practices: [
+                {
+                  id: "exhale",
+                  title: "Two-minute exhale reset",
+                  about: "Before the call, name the worry, then lengthen the breath.",
+                },
+                {
+                  id: "mobility",
+                  title: "Show-day mobility",
+                  about: "Warm joints before call; cool down so tomorrow is kinder.",
+                },
+              ],
+              reads: [
+                { id: "vocal-health", title: "Vocal health" },
+                { id: "show-day-mobility", title: "Show-day mobility" },
+              ],
+              people: practitioners.slice(0, 6).map((p) => ({
+                id: p.id,
+                title: p.name,
+                about: `${p.specialty}, ${p.location}`,
+              })),
+            },
+          });
+          if (picks.note) {
+            setNote(picks.note);
+            wroteNote = true;
+          }
+          if (picks.practice) setPractice(picks.practice);
+          if (picks.reads?.[0]) setRead(picks.reads[0]);
+          if (picks.person) {
+            const match = practitioners.find((p) => p.id === picks.person);
+            setPerson(match?.name || picks.person);
+          }
+          setServiceNote(
+            picks.line || "Live For You via pm-recovery + Claude",
+          );
+          try {
+            const week = await weeklySummary(s);
+            if (week.summary) setWeekSummary(week.summary);
+          } catch {
+            /* bars still show */
+          }
+        });
+        if (!wroteNote) {
+          setNote(
+            `Today looks like a ${dayKind.toLowerCase()}. Keep the warm-up short, drink early, and let the notes stay in the room.`,
+          );
+        }
+      } else {
+        setNote(
+          `Today looks like a ${dayKind.toLowerCase()}. Keep the warm-up short, drink early, and let the notes stay in the room.`,
+        );
+        setServiceNote(
+          live
+            ? "Signed in — turn on check-in sharing for Claude picks"
+            : "Sample picks — sign in for live Claude notes",
+        );
+      }
+      setDone(true);
+    } catch (err) {
+      setNote(
+        `Today looks like a ${dayKind.toLowerCase()}. Keep the warm-up short, drink early, and let the notes stay in the room.`,
+      );
+      setServiceNote(
+        err instanceof Error ? err.message : "Could not reach For You — showing standard picks",
+      );
+      setDone(true);
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -77,7 +153,7 @@ export function ForYou() {
         <p>
           {done
             ? note
-            : "After your check-in, today’s note and picks will land here — Claude chooses only from Method content and practitioners on the site."}
+            : "After your check-in, today’s note and picks land here — Claude chooses only from Method content and practitioners on the site."}
         </p>
         {serviceNote ? (
           <p className="service-banner" style={{ marginTop: "0.85rem" }}>
@@ -100,28 +176,24 @@ export function ForYou() {
             <article className="pick-tile">
               <span>Practice</span>
               <h3>{practice}</h3>
-              <p>From Mind — before the call, name the worry, then lengthen the breath.</p>
+              <p>Chosen for how you’re arriving today.</p>
             </article>
             <article className="pick-tile">
               <span>Reads</span>
               <h3>{read}</h3>
-              <p>From Body — warm joints before call; cool down so tomorrow is kinder.</p>
+              <p>From the Method library.</p>
             </article>
             <article className="pick-tile">
               <span>Practitioner</span>
-              <h3>{practitioners[0].name}</h3>
-              <p>
-                Suggested when load runs high — {practitioners[0].specialty} in{" "}
-                {practitioners[0].city}.
-              </p>
+              <h3>{person}</h3>
+              <p>Suggested when load or voice asks for support.</p>
             </article>
           </div>
 
           {showCare || done ? (
             <p className="care-notes">
               Gentle care: if body feels low, shrink the plan. Chest or sharp
-              pain is a stop — seek medical care. Soft tissue tiredness can wait
-              for paced recovery.
+              pain is a stop — seek medical care.
             </p>
           ) : null}
 
@@ -243,7 +315,11 @@ export function ForYou() {
                   onClick={advance}
                   disabled={busy}
                 >
-                  {busy ? "Writing your note…" : step < 4 ? "Next" : "Save check-in"}
+                  {busy
+                    ? "Writing your note…"
+                    : step < 4
+                      ? "Next"
+                      : "Save check-in"}
                 </button>
               </>
             ) : (
