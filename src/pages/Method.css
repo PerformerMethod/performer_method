@@ -14,6 +14,8 @@
   background: var(--stone);
   position: sticky;
   top: calc(var(--header-h) + 0.5rem);
+  box-shadow: var(--shadow-float);
+  border: 1px solid var(--glass-edge-soft);
 }
 
 .method-stage img {
@@ -33,13 +35,24 @@
 .method-nav a {
   padding: 1rem;
   border-radius: var(--radius-sm);
-  background: var(--stone-2);
-  transition: background 0.25s var(--ease);
+  background: var(--glass);
+  border: 1px solid var(--glass-edge-soft);
+  backdrop-filter: blur(16px) saturate(1.3);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  transition:
+    background var(--dur) var(--ease),
+    transform var(--dur-fast) var(--ease-spring);
 }
 
 .method-nav a:hover,
 .method-nav a.active {
-  background: var(--sage-soft);
+  background: linear-gradient(
+    165deg,
+    rgba(220, 229, 210, 0.85),
+    rgba(255, 255, 255, 0.55)
+  );
+  transform: translateY(-1px);
 }
 
 .method-nav h3 {

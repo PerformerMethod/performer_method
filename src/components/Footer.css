@@ -1,10 +1,29 @@
 .site-footer {
-  background: var(--ink);
+  position: relative;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(220, 229, 210, 0.16), transparent 40%),
+    linear-gradient(180deg, #243f1c 0%, var(--ink) 40%, #0e1a0b 100%);
   color: var(--cream);
   border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   padding: clamp(2.5rem, 6vw, 5rem) var(--gutter)
     calc(1.5rem + var(--tab-h) + env(safe-area-inset-bottom));
   margin-top: clamp(1rem, 3vw, 2rem);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 -20px 60px -40px rgba(28, 58, 19, 0.45);
+  overflow: hidden;
+}
+
+.site-footer::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 28%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 255, 255, 0)
+  );
+  pointer-events: none;
 }
 
 .footer-top {
@@ -27,8 +46,8 @@
   width: 0.5em;
   height: 0.5em;
   background: currentColor;
-  -webkit-mask: url("/assets/brand-asterisk.svg") center / contain no-repeat;
-  mask: url("/assets/brand-asterisk.svg") center / contain no-repeat;
+  -webkit-mask: url("/brand/brand-asterisk.svg") center / contain no-repeat;
+  mask: url("/brand/brand-asterisk.svg") center / contain no-repeat;
 }
 
 .footer-tag {
